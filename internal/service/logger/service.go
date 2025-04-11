@@ -51,7 +51,7 @@ func (s *loggerService) Start() error {
 	go s.pusher()       // push events to the server
 	go s.recordWorker() // record events
 	// Send the init event
-
+	s.sendInitEvent()
 	return nil
 }
 
@@ -113,14 +113,14 @@ func (s *loggerService) recorder() error {
 			s.serverManager.PushError(err) // push error to the server
 		}
 	}()
-	processes, err := s.oqManager.GetCurrentRunningProcesses(s.trackedBundleIDs)
+	// processes, err := s.oqManager.GetCurrentRunningProcesses(s.trackedBundleIDs)
 	if err != nil {
 		return err
 	}
-	s.eventChan <- &models.LogEvent{
-		Intent:    models.IntentRunningProcesses,
-		Processes: processes,
-	}
+	// s.eventChan <- &models.LogEvent{
+	// 	Intent:    models.IntentRunningProcesses,
+	// 	Processes: processes,
+	// }
 	return nil
 }
 

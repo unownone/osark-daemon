@@ -46,14 +46,14 @@ func (p *pushManager) Push(data []*models.LogEvent) error {
 		return errors.Wrap(err, "failed to create request")
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Identifier", p.deviceID)
+	req.Header.Set("X-Identifier", p.deviceID)
 	resp, err := p.service.Do(req)
 	if err != nil {
 		fmt.Printf("failed to send request: %v\n", err)
 		return errors.Wrap(err, "failed to send request")
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		fmt.Printf("failed to send request: %v\n", resp.StatusCode)
 		body, _ := io.ReadAll(resp.Body)
 		fmt.Printf("response body: %s\n", string(body))

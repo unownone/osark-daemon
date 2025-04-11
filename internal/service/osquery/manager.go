@@ -14,7 +14,7 @@ import (
 type Manager interface {
 	GetSystemInfo() (*models.SystemInfo, error)                                   // GetSystemInfo returns the system information
 	GetApps() ([]*models.AppInfo, error)                                          // GetApps returns all the apps in the system
-	GetCurrentRunningProcesses(bundleIDs []string) ([]*models.ProcessInfo, error) // GetCurrentRunningProcesses returns the current running processes
+	// GetCurrentRunningProcesses(bundleIDs []string) ([]*models.ProcessInfo, error) // GetCurrentRunningProcesses returns the current running processes
 	StartLoggerProcess() error                                                    // StartLoggerProcess starts the logger process
 }
 
