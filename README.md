@@ -5,7 +5,7 @@ This daemon is responsible for tracking the user's activity on the system.
 ## Features
 
 - Tracking
-  - [x] Apps
+  - [x] Apps & System Activity Info
   - [ ] App Open/Close/ Focus Events
 
 - Reporting
@@ -17,7 +17,6 @@ This daemon is responsible for tracking the user's activity on the system.
   - [x] Daemon process
   - [ ] Auto Startup
   - [ ] Auto installation of osquery if not present
-  - [ ] bundling with brew
 
 ## Installation
 
