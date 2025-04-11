@@ -10,7 +10,7 @@ import (
 func FindOSQuery() (string, error) {
 	// Common socket paths by OS
 	var socketPaths []string
-	
+
 	switch runtime.GOOS {
 	case "darwin":
 		socketPaths = []string{
@@ -31,13 +31,13 @@ func FindOSQuery() (string, error) {
 			`\\.\pipe\osquery.em`,
 		}
 	}
-	
+
 	// Check all potential socket paths
 	for _, path := range socketPaths {
 		if _, err := os.Stat(path); err == nil {
 			return path, nil
 		}
 	}
-	
+
 	return "", os.ErrNotExist
 }

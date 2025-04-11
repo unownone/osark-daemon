@@ -1,7 +1,6 @@
 package osquery
 
 import (
-	"runtime"
 	"time"
 
 	"github.com/osquery/osquery-go"
@@ -13,14 +12,13 @@ import (
 // Manager is the interface for the tracking manager
 // It is responsible for managing the tracking of apps and other events in the system
 type Manager interface {
-	GetSystemInfo() (*models.SystemInfo, error) // GetSystemInfo returns the system information
-	GetApps() ([]*models.AppInfo, error) // GetApps returns all the apps in the system
+	GetSystemInfo() (*models.SystemInfo, error)                                   // GetSystemInfo returns the system information
+	GetApps() ([]*models.AppInfo, error)                                          // GetApps returns all the apps in the system
 	GetCurrentRunningProcesses(bundleIDs []string) ([]*models.ProcessInfo, error) // GetCurrentRunningProcesses returns the current running processes
-	StartLoggerProcess() error // StartLoggerProcess starts the logger process
+	StartLoggerProcess() error                                                    // StartLoggerProcess starts the logger process
 }
 
 type manager struct {
-	osArch   models.OSArch
 	osClient *osquery.ExtensionManagerClient
 }
 
@@ -34,12 +32,7 @@ func NewManager() (Manager, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create osquery client")
 	}
-	osArch, err := models.NewOSArch(runtime.GOOS)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to start manager")
-	}
 	return &manager{
-		osArch:   osArch,
 		osClient: osQueryClient,
 	}, nil
 }
@@ -48,4 +41,3 @@ func NewManager() (Manager, error) {
 func (m *manager) StartLoggerProcess() error {
 	return nil
 }
-

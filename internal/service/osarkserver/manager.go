@@ -10,7 +10,7 @@ import (
 // Manager is the interface for the push manager
 type Manager interface {
 	Authenticate(*models.SystemInfo) error // Authenticate authenticates the push manager
-	Push(data []*models.LogEvent) error       // Push pushes the data to the server
+	Push(data []*models.LogEvent) error    // Push pushes the data to the server
 	PushError(error) error                 // PushError pushes an error to the server
 }
 

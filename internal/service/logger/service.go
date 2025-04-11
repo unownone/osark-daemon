@@ -7,6 +7,7 @@ import (
 
 	"github.com/unownone/osark-daemon/internal/service/osarkserver"
 	"github.com/unownone/osark-daemon/internal/service/osquery"
+	"github.com/unownone/osark-daemon/internal/utils"
 	"github.com/unownone/osark-daemon/models"
 )
 
@@ -23,13 +24,13 @@ type Service interface {
 // It is responsible for logging events to the system logger
 // and pushing them to the server
 type loggerService struct {
-	oqManager     osquery.Manager
-	serverManager osarkserver.Manager
-	eventChan     chan *models.LogEvent
-	waitGroup     *sync.WaitGroup
-	delay         time.Duration
-	batchSize     int
-	stopChan      chan *struct{}
+	oqManager        osquery.Manager
+	serverManager    osarkserver.Manager
+	eventChan        chan *models.LogEvent
+	waitGroup        *sync.WaitGroup
+	delay            time.Duration
+	batchSize        int
+	stopChan         chan *struct{}
 	trackedBundleIDs []string
 }
 
@@ -47,7 +48,7 @@ func NewLoggerService(oqManager osquery.Manager, serverManager osarkserver.Manag
 
 // Start starts the logger service
 func (s *loggerService) Start() error {
-	go s.pusher() // push events to the server
+	go s.pusher()       // push events to the server
 	go s.recordWorker() // record events
 	// Send the init event
 
@@ -73,7 +74,7 @@ func (s *loggerService) Stop() error {
 func (s *loggerService) pusher() error {
 	s.waitGroup.Add(1)
 	ticker := time.NewTicker(s.delay) // we wait for the delay to push the events that got collected
-	batch := models.NewBatchStore[*models.LogEvent](s.batchSize)
+	batch := utils.NewBatchStore[*models.LogEvent](s.batchSize)
 	defer ticker.Stop()
 
 	for {
@@ -117,7 +118,7 @@ func (s *loggerService) recorder() error {
 		return err
 	}
 	s.eventChan <- &models.LogEvent{
-		Intent: models.IntentRunningProcesses,
+		Intent:    models.IntentRunningProcesses,
 		Processes: processes,
 	}
 	return nil

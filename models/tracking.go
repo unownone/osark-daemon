@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"time"
 )
 
@@ -53,29 +52,6 @@ type SystemInfo struct {
 	OSVersion      string        `json:"os_version"`      // Version of the operating system
 	OSArch         string        `json:"os_arch"`         // Architecture of the operating system
 	MacAddress     string        `json:"mac_address"`     // Mac address of the system
-}
-
-// OSArch is the architecture of the operating system
-type OSArch string
-
-const (
-	OSArchDarwin  OSArch = "darwin"  // macOS
-	OSArchLinux   OSArch = "linux"   // Linux
-	OSArchWindows OSArch = "windows" // Windows
-)
-
-// NewOSArch creates a new OSArch from a string
-func NewOSArch(maybeOSArch string) (OSArch, error) {
-	switch maybeOSArch {
-	case "darwin":
-		return OSArchDarwin, nil
-	case "linux":
-		return OSArchLinux, nil
-	case "windows":
-		return OSArchWindows, nil
-	default:
-		return "", errors.New("invalid/unsupported operating system")
-	}
 }
 
 type ProcessInfo struct {

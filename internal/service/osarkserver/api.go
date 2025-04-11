@@ -6,11 +6,16 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/pkg/errors"
 	"github.com/unownone/osark-daemon/models"
 )
+
+func (p *pushManager) getEventURL() string {
+	return fmt.Sprintf("%s/api/events", p.osarkServerURL)
+}
 
 // Authenticate authenticates the push manager
 func (p *pushManager) Authenticate(info *models.SystemInfo) error {
@@ -36,7 +41,7 @@ func (p *pushManager) Push(data []*models.LogEvent) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal data")
 	}
-	req, err := http.NewRequest("POST", p.osarkServerURL, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", p.getEventURL(), bytes.NewBuffer(jsonData))
 	if err != nil {
 		return errors.Wrap(err, "failed to create request")
 	}
@@ -44,10 +49,14 @@ func (p *pushManager) Push(data []*models.LogEvent) error {
 	req.Header.Set("Identifier", p.deviceID)
 	resp, err := p.service.Do(req)
 	if err != nil {
+		fmt.Printf("failed to send request: %v\n", err)
 		return errors.Wrap(err, "failed to send request")
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("failed to send request: %v\n", resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("response body: %s\n", string(body))
 		return errors.New("failed to send request")
 	}
 	return nil

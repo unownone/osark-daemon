@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	OsarkServerURL string = "http://localhost:8080"
+	OsarkServerURL string = "http://127.0.0.1:3000"
 )
 
 func main() {

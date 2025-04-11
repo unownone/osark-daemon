@@ -1,19 +1,19 @@
-package models
+package utils
 
 // BatchStore is a efficient store for batches of data
 // It is a slice of pointers to the data
 type BatchStore[T any] struct {
-	store []T
+	store   []T
 	counter int
-	size int
+	size    int
 }
 
 // NewBatchStore creates a new batch store
 func NewBatchStore[T any](size int) BatchStore[T] {
 	return BatchStore[T]{
-		store: make([]T, 0, size),
+		store:   make([]T, 0, size),
 		counter: 0,
-		size: size,
+		size:    size,
 	}
 }
 

@@ -14,7 +14,7 @@ func (m *manager) GetSystemInfo() (*models.SystemInfo, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get system info")
 	}
-	
+
 	if res.Status.Code != 0 || len(res.Response) == 0 {
 		return nil, errors.New("failed to get system info: " + res.Status.Message)
 	}
@@ -22,9 +22,9 @@ func (m *manager) GetSystemInfo() (*models.SystemInfo, error) {
 	data := res.Response[0]
 
 	systemInfo := &models.SystemInfo{
-		OSName: data["name"],
+		OSName:    data["name"],
 		OSVersion: data["version"],
-		OSArch: data["arch"],
+		OSArch:    data["arch"],
 	}
 
 	if uptime, err := m.getUptime(); err != nil {
@@ -82,7 +82,6 @@ func (m *manager) getMACAddress() (string, error) {
 	data := res.Response[0]
 	return data["address"], nil
 }
-
 
 func (m *manager) getOSQueryVersion() (string, error) {
 	res, err := m.osClient.Query(getOSQueryVersion)
