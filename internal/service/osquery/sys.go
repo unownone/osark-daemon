@@ -39,6 +39,12 @@ func (m *manager) GetSystemInfo() (*models.SystemInfo, error) {
 		systemInfo.MacAddress = macAddress
 	}
 
+	if osqueryVersion, err := m.getOSQueryVersion(); err != nil {
+		return nil, errors.Wrap(err, "failed to get osquery version")
+	} else {
+		systemInfo.OSQueryVersion = osqueryVersion
+	}
+
 	return systemInfo, nil
 }
 
@@ -75,4 +81,19 @@ func (m *manager) getMACAddress() (string, error) {
 
 	data := res.Response[0]
 	return data["address"], nil
+}
+
+
+func (m *manager) getOSQueryVersion() (string, error) {
+	res, err := m.osClient.Query(getOSQueryVersion)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get osquery version")
+	}
+
+	if res.Status.Code != 0 || len(res.Response) == 0 {
+		return "", errors.New("failed to get osquery version: " + res.Status.Message)
+	}
+
+	data := res.Response[0]
+	return data["version"], nil
 }

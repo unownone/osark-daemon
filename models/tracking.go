@@ -10,15 +10,15 @@ type Intent string
 
 const (
 	IntentInit Intent = "init"
-	
-	// App events 
-	IntentAppOpen Intent = "app_open"
-	IntentAppFocus Intent = "app_focus"
-	IntentAppBlur Intent = "app_blur"
-	IntentAppSwitch Intent = "app_switch"
+
+	// App events
+	IntentAppOpen      Intent = "app_open"
+	IntentAppFocus     Intent = "app_focus"
+	IntentAppBlur      Intent = "app_blur"
+	IntentAppSwitch    Intent = "app_switch"
 	IntentAppTerminate Intent = "app_terminate"
-	IntentAppLaunch Intent = "app_launch"
-	IntentAppClose Intent = "app_close"
+	IntentAppLaunch    Intent = "app_launch"
+	IntentAppClose     Intent = "app_close"
 
 	// Process events
 	IntentRunningProcesses Intent = "running_processes"
@@ -26,12 +26,12 @@ const (
 
 // LogEvent is the event that is logged to the server
 type LogEvent struct {
-	Intent     Intent      `json:"intent"`     // Intent is the intent of the event
-	AppInfo    []*AppInfo  `json:"app_info,omitempty"`    // AppInfo is the information about an app
-	Error      string      `json:"error,omitempty"`       // Error is the error message
-	SystemInfo *SystemInfo `json:"system_info,omitempty"` // SystemInfo is the information about the system
-	CreatedAt  time.Time   `json:"created_at"`            // CreatedAt is the time the event was created
-	Processes  []*ProcessInfo `json:"processes,omitempty"` // Processes is the information about the processes
+	Intent     Intent         `json:"intent"`                // Intent is the intent of the event
+	AppInfo    []*AppInfo     `json:"app_info,omitempty"`    // AppInfo is the information about an app
+	Error      string         `json:"error,omitempty"`       // Error is the error message
+	SystemInfo *SystemInfo    `json:"system_info,omitempty"` // SystemInfo is the information about the system
+	CreatedAt  time.Time      `json:"created_at"`            // CreatedAt is the time the event was created
+	Processes  []*ProcessInfo `json:"processes,omitempty"`   // Processes is the information about the processes
 }
 
 // AppInfo is the information about an app
@@ -47,11 +47,12 @@ type AppInfo struct {
 
 // SystemInfo is the information about the system
 type SystemInfo struct {
-	UptimeSeconds time.Duration `json:"uptime_seconds"` // Uptime seconds of the system
-	OSName        string        `json:"os_name"`        // Name of the operating system
-	OSVersion     string        `json:"os_version"`     // Version of the operating system
-	OSArch        string        `json:"os_arch"`        // Architecture of the operating system
-	MacAddress    string        `json:"mac_address"`    // Mac address of the system
+	UptimeSeconds  time.Duration `json:"uptime_seconds"`  // Uptime seconds of the system
+	OSQueryVersion string        `json:"osquery_version"` // Version of osquery
+	OSName         string        `json:"os_name"`         // Name of the operating system
+	OSVersion      string        `json:"os_version"`      // Version of the operating system
+	OSArch         string        `json:"os_arch"`         // Architecture of the operating system
+	MacAddress     string        `json:"mac_address"`     // Mac address of the system
 }
 
 // OSArch is the architecture of the operating system
@@ -77,11 +78,10 @@ func NewOSArch(maybeOSArch string) (OSArch, error) {
 	}
 }
 
-
 type ProcessInfo struct {
-	PID string `json:"pid"`
-	Name string `json:"name"`
-	BundleID string `json:"bundle_id"`
+	PID           string `json:"pid"`
+	Name          string `json:"name"`
+	BundleID      string `json:"bundle_id"`
 	BundleVersion string `json:"bundle_version"`
-	Path string `json:"path"`
+	Path          string `json:"path"`
 }

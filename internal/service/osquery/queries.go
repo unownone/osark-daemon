@@ -18,6 +18,11 @@ const (
 
 // System data
 const (
+	getOSQueryVersion = `
+	SELECT 
+		version 
+	FROM 
+		osquery_info;`
 	// getSystemInfo returns the system information
 	getSystemInfo = `
 	SELECT
@@ -25,7 +30,7 @@ const (
 		version,
 		platform,
 		platform_like,
-		arch 
+		arch
 	FROM 
 		os_version;`
 	// getSystemUptime returns the uptime of the system
