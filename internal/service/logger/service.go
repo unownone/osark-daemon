@@ -10,6 +10,9 @@ import (
 	"github.com/unownone/osark-daemon/models"
 )
 
+// Debt: we currently track all app
+
+// Service is the interface for the logger service
 type Service interface {
 	Start() error
 	Stop() error
@@ -27,6 +30,7 @@ type loggerService struct {
 	delay         time.Duration
 	batchSize     int
 	stopChan      chan *struct{}
+	trackedBundleIDs []string
 }
 
 // NewLoggerService creates a new logger service
@@ -45,6 +49,8 @@ func NewLoggerService(oqManager osquery.Manager, serverManager osarkserver.Manag
 func (s *loggerService) Start() error {
 	go s.pusher() // push events to the server
 	go s.recordWorker() // record events
+	// Send the init event
+
 	return nil
 }
 
@@ -106,17 +112,13 @@ func (s *loggerService) recorder() error {
 			s.serverManager.PushError(err) // push error to the server
 		}
 	}()
-	apps, err := s.oqManager.GetApps()
-	if err != nil {
-		return err
-	}
-	sysInfo, err := s.oqManager.GetSystemInfo()
+	processes, err := s.oqManager.GetCurrentRunningProcesses(s.trackedBundleIDs)
 	if err != nil {
 		return err
 	}
 	s.eventChan <- &models.LogEvent{
-		AppInfo:    apps,
-		SystemInfo: sysInfo,
+		Intent: models.IntentRunningProcesses,
+		Processes: processes,
 	}
 	return nil
 }
@@ -133,4 +135,27 @@ func (s *loggerService) recordWorker() error {
 			return nil
 		}
 	}
+}
+
+// sendInitEvent sends the init event
+func (s *loggerService) sendInitEvent() error {
+	apps, err := s.oqManager.GetApps()
+	if err != nil {
+		return err
+	}
+	sysInfo, err := s.oqManager.GetSystemInfo()
+	if err != nil {
+		return err
+	}
+	s.trackedBundleIDs = make([]string, 0, len(apps))
+	// TODO: we should track targetted apps
+	for _, app := range apps[:10] {
+		s.trackedBundleIDs = append(s.trackedBundleIDs, app.BundleID)
+	}
+	s.eventChan <- &models.LogEvent{
+		Intent:     models.IntentInit,
+		AppInfo:    apps,
+		SystemInfo: sysInfo,
+	}
+	return nil
 }

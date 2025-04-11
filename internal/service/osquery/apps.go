@@ -1,6 +1,8 @@
 package osquery
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -33,4 +35,28 @@ func (m *manager) GetApps() ([]*models.AppInfo, error) {
 		apps = append(apps, appInfo)
 	}
 	return apps, nil
+}
+
+// GetCurrentRunningProcesses returns the current running processes
+func (m *manager) GetCurrentRunningProcesses(bundleIDs []string) ([]*models.ProcessInfo, error) {
+	query := fmt.Sprintf(getCurrentRunningProcesses, strings.Join(bundleIDs, ","))
+	res, err := m.osClient.Query(query)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get current running processes")
+	}
+	if res.Status.Code != 0 {
+		return nil, errors.New("failed to get current running processes: " + res.Status.Message)
+	}
+	
+	processes := make([]*models.ProcessInfo, 0, len(res.Response))
+	for _, process := range res.Response {
+		processes = append(processes, &models.ProcessInfo{
+			PID: process["pid"],
+			Name: process["name"],
+			BundleID: process["bundle_identifier"],
+			BundleVersion: process["bundle_version"],
+			Path: process["path"],
+		})
+	}
+	return processes, nil
 }

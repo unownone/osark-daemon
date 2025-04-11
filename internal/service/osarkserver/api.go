@@ -32,9 +32,6 @@ func (p *pushManager) generateDeviceID(info *models.SystemInfo) (string, error) 
 
 // Push pushes the data to the server
 func (p *pushManager) Push(data []*models.LogEvent) error {
-	for _, d := range data {
-		fmt.Printf("Pushing data to the server: %v\n", d)
-	}
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal data")

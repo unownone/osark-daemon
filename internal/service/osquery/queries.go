@@ -46,3 +46,27 @@ const (
 	LIMIT 1;
 	`
 )
+
+// Process data
+const (
+	// getCurrentRunningProcesses returns the current running processes
+	getCurrentRunningProcesses = `
+	SELECT
+		pid,
+		name,
+		bundle_identifier,
+		bundle_version,
+		path
+	FROM processes
+	WHERE
+		bundle_identifier IN (%s);`
+	// getProcesses returns all the processes in the system
+	getProcesses = `
+	SELECT
+		pid,
+		name,
+		bundle_identifier,
+		bundle_version,
+		path
+	FROM processes;`
+)
